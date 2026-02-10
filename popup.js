@@ -142,12 +142,16 @@ function showStatus(message) {
 }
 
 // Load settings
-chrome.storage.sync.get(['colors', 'enabled'], (data) => {
+chrome.storage.sync.get(['colors', 'enabled', 'addSpaces', 'showCopyButton'], (data) => {
   const colors = data.colors || DEFAULT_COLORS;
   const enabled = data.enabled !== false; // Default to true
+  const addSpaces = data.addSpaces || false;
+  const showCopyButton = data.showCopyButton !== false;
   
   setColors(colors);
   document.getElementById('enabled').checked = enabled;
+  document.getElementById('addSpaces').checked = addSpaces;
+  document.getElementById('showCopyButton').checked = showCopyButton;
   updatePreview();
 });
 
@@ -158,14 +162,22 @@ chrome.storage.sync.get(['colors', 'enabled'], (data) => {
 document.getElementById('save').addEventListener('click', () => {
   const colors = getColors();
   const enabled = document.getElementById('enabled').checked;
+  const addSpaces = document.getElementById('addSpaces').checked;
+  const showCopyButton = document.getElementById('showCopyButton').checked;
   
-  chrome.storage.sync.set({ colors, enabled }, () => {
+  chrome.storage.sync.set({ colors, enabled, addSpaces, showCopyButton }, () => {
     showStatus('Settings saved!');
     
     // Notify content scripts to update
     chrome.tabs.query({ url: 'https://mempool.space/*' }, (tabs) => {
       tabs.forEach(tab => {
-        chrome.tabs.sendMessage(tab.id, { type: 'updateColors', colors, enabled });
+        chrome.tabs.sendMessage(tab.id, { 
+          type: 'updateColors', 
+          colors, 
+          enabled,
+          addSpaces,
+          showCopyButton
+        });
       });
     });
   });
@@ -175,9 +187,13 @@ document.getElementById('save').addEventListener('click', () => {
 document.getElementById('reset').addEventListener('click', () => {
   setColors(DEFAULT_COLORS);
   document.getElementById('enabled').checked = true;
+  document.getElementById('addSpaces').checked = false;
+  document.getElementById('showCopyButton').checked = true;
   updatePreview();
   showStatus('Reset to defaults');
 });
 
-// Toggle change
+// Toggle changes
 document.getElementById('enabled').addEventListener('change', updatePreview);
+document.getElementById('addSpaces').addEventListener('change', updatePreview);
+document.getElementById('showCopyButton').addEventListener('change', updatePreview);
