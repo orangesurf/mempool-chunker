@@ -107,7 +107,8 @@
     if (shouldSkipElement(container)) return;
     
     // Get the full address from the title attribute of parent link or href
-    const parentLink = container.closest('a[title]') || container.closest('a[href*="/address/"]');
+    const parentLink = container.closest('a[title]') || container.closest('a[href*="/address/"]') ||
+                   container.querySelector('a[title]') || container.querySelector('a[href*="/address/"]');
     let fullAddress = parentLink?.getAttribute('title') || '';
     
     if (!fullAddress && parentLink) {
