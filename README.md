@@ -5,10 +5,14 @@ _WARNING - DONT INSTALL RANDOM EXTENSIONS WITHOUT CHECKING THE CODE_
 2. Go to [chrome://extensions/](chrome://extensions/) and load unpacked 
 3. Done, view a transaction on mempool.space 
 
-<img width="1036" height="261" alt="image" src="https://github.com/user-attachments/assets/5802bc6e-c646-4903-8e51-5b6e4b8968c9" />
+<img width="800" height="391" alt="image" src="https://github.com/user-attachments/assets/2ae8af01-7cc7-4e24-a9a8-a5ac3069da80" />
+
 
 # Configuration
-1. Click on the extensions button (top right) and click on bitcoin address coloriser 
-2. Pick the colors you wish to use, click save
+Click on the extensions button (top right) and click on bitcoin address coloriser 
+- Pick the colors you wish to use
+- Toggle on spaces between chunks (thanks [ottosch](https://github.com/ottosch))
+- Show copy icon to copy truncated addresses
 
-<img width="313" height="439" alt="image" src="https://github.com/user-attachments/assets/e9ffe77b-d815-41ed-a126-6d633f04a932" />
+<img width="300" height="555" alt="image" src="https://github.com/user-attachments/assets/59c35d5f-2098-4a2a-b2de-47e59f334e3d" />
+
