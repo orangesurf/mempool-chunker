@@ -1,0 +1,23 @@
+/* Ensure colorized addresses maintain proper layout */
+.btc-colorized-address {
+  display: inline;
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', 'Menlo', monospace !important;
+  white-space: inherit;
+  letter-spacing: 0;
+}
+
+.btc-colorized-address > span {
+  transition: color 0.2s ease;
+  font-family: inherit !important;
+}
+
+/* Ensure truncated addresses also use monospace */
+app-truncate .btc-colorized-address,
+.truncate .btc-colorized-address {
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', 'Menlo', monospace !important;
+}
+
+/* Style the last-four part to match */
+.last-four.btc-colorized-last {
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Consolas', 'Monaco', 'Menlo', monospace !important;
+}

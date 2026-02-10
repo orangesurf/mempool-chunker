@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Address Colorizer Settings</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      margin: 0;
+    }
+    
+    h1 {
+      font-size: 16px;
+      margin: 0 0 16px 0;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    h1 svg {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .description {
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    
+    .color-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .color-label {
+      font-size: 13px;
+      width: 80px;
+      color: #ccc;
+    }
+    
+    .color-picker-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    
+    input[type="color"] {
+      width: 40px;
+      height: 32px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+    }
+    
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 2px;
+    }
+    
+    input[type="color"]::-webkit-color-swatch {
+      border-radius: 3px;
+      border: 1px solid #444;
+    }
+    
+    input[type="text"] {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background: #2a2a4a;
+      color: #fff;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #05ddff;
+    }
+    
+    .preview-section {
+      margin-bottom: 16px;
+    }
+    
+    .preview-label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    
+    .preview-address {
+      font-family: monospace;
+      font-size: 13px;
+      background: #2a2a4a;
+      padding: 10px;
+      border-radius: 6px;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .save-btn {
+      background: #05ddff;
+      color: #000;
+    }
+    
+    .save-btn:hover {
+      background: #3ae8ff;
+    }
+    
+    .reset-btn {
+      background: #3a3a5a;
+      color: #fff;
+    }
+    
+    .reset-btn:hover {
+      background: #4a4a6a;
+    }
+    
+    .status {
+      margin-top: 12px;
+      font-size: 12px;
+      text-align: center;
+      color: #4ade80;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .status.show {
+      opacity: 1;
+    }
+    
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding: 10px;
+      background: #2a2a4a;
+      border-radius: 6px;
+    }
+    
+    .toggle-label {
+      font-size: 13px;
+    }
+    
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
+    
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #444;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+    
+    .toggle input:checked + .toggle-slider {
+      background-color: #05ddff;
+    }
+    
+    .toggle input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M12 6v6l4 2"/>
+    </svg>
+    Address Colorizer
+  </h1>
+  
+  <p class="description">
+    Colorize 4-character chunks of Bitcoin addresses to make them easier to read and verify.
+  </p>
+  
+  <div class="toggle-row">
+    <span class="toggle-label">Enable colorization</span>
+    <label class="toggle">
+      <input type="checkbox" id="enabled" checked>
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  
+  <div class="color-list">
+    <div class="color-row">
+      <span class="color-label">Color 1</span>
+      <div class="color-picker-wrapper">
+        <input type="color" id="color1" value="#05ddff">
+        <input type="text" id="color1-hex" value="#05ddff" maxlength="7">
+      </div>
+    </div>
+    <div class="color-row">
+      <span class="color-label">Color 2</span>
+      <div class="color-picker-wrapper">
+        <input type="color" id="color2" value="#6c92f9">
+        <input type="text" id="color2-hex" value="#6c92f9" maxlength="7">
+      </div>
+    </div>
+  </div>
+  
+  <div class="preview-section">
+    <div class="preview-label">Preview</div>
+    <div class="preview-address" id="preview"></div>
+  </div>
+  
+  <div class="buttons">
+    <button class="reset-btn" id="reset">Reset</button>
+    <button class="save-btn" id="save">Save Settings</button>
+  </div>
+  
+  <div class="status" id="status">Settings saved!</div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

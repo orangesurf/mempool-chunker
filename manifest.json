@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Bitcoin Address Colorizer",
+  "version": "1.0",
+  "description": "Colors 4-character chunks of Bitcoin addresses on mempool.space for easier reading.",
+  "permissions": [
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mempool.space/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
