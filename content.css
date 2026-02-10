@@ -6,9 +6,44 @@
   letter-spacing: 0;
 }
 
-.btc-colorized-address > span {
+.btc-colorized-address > span:not(.btc-hidden-address) {
   transition: color 0.2s ease;
   font-family: inherit !important;
+}
+
+/* Hidden address for CTRL-F and clipboard operations */
+.btc-hidden-address {
+  display: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Space between chunks */
+.btc-chunk-space {
+  display: inline;
+}
+
+/* Copy button styling - matches mempool.space native app-clipboard */
+.btc-copy-clipboard {
+  display: inline;
+}
+
+.btc-copy-clipboard button.btn.btn-link {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.btc-copy-clipboard button.btn.btn-link:hover {
+  opacity: 1;
+}
+
+.btc-copy-clipboard button.btn.btn-link:active {
+  transform: scale(0.95);
 }
 
 /* Ensure truncated addresses also use monospace */
