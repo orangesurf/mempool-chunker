@@ -146,7 +146,7 @@
         // Add space
         const spaceSpan = document.createElement('span');
         spaceSpan.className = 'btc-chunk-space';
-        spaceSpan.textContent = ' ';
+        spaceSpan.textContent = '';
         wrapper.appendChild(spaceSpan);
       }
     }
