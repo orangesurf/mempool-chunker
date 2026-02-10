@@ -15,13 +15,17 @@
   
   let colors = DEFAULT_COLORS;
   let enabled = true;
+  let addSpaces = false;
+  let showCopyButton = true;
   let processedNodes = new WeakSet();
   
   // Load settings
   function loadSettings() {
-    chrome.storage.sync.get(['colors', 'enabled'], (data) => {
+    chrome.storage.sync.get(['colors', 'enabled', 'addSpaces', 'showCopyButton'], (data) => {
       colors = data.colors || DEFAULT_COLORS;
       enabled = data.enabled !== false;
+      addSpaces = data.addSpaces || false;
+      showCopyButton = data.showCopyButton !== false;
       if (enabled) {
         processPage();
       }
@@ -56,12 +60,56 @@
     return false;
   }
   
+  // Create a copy button for an address
+  // Clippy SVG matching mempool.space's native icon
+  const CLIPPY_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" viewBox="0 0 1000 1000"><path fill="#FFFFFF" d="M128 768h256v64H128v-64z m320-384H128v64h320v-64z m128 192V448L384 640l192 192V704h320V576H576z m-288-64H128v64h160v-64zM128 704h160v-64H128v64z m576 64h64v128c-1 18-7 33-19 45s-27 18-45 19H64c-35 0-64-29-64-64V192c0-35 29-64 64-64h192C256 57 313 0 384 0s128 57 128 128h192c35 0 64 29 64 64v320h-64V320H64v576h640V768zM128 256h512c0-35-29-64-64-64h-64c-35 0-64-29-64-64s-29-64-64-64-64 29-64 64-29 64-64 64h-64c-35 0-64 29-64 64z"></path></svg>`;
+  const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="13" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+
+  function createCopyButton(address) {
+    const wrapper = document.createElement('app-clipboard');
+    wrapper.className = 'btc-copy-clipboard';
+    
+    const inner = document.createElement('span');
+    inner.style.position = 'relative';
+    
+    const button = document.createElement('button');
+    button.className = 'btn btn-link btn-sm padding pt-0';
+    button.style.boxShadow = 'none';
+    button.title = 'Copy address';
+    button.setAttribute('data-address', address);
+    button.innerHTML = CLIPPY_SVG;
+    
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const addr = e.currentTarget.getAttribute('data-address');
+      navigator.clipboard.writeText(addr).then(() => {
+        e.currentTarget.innerHTML = CHECK_SVG;
+        setTimeout(() => {
+          e.currentTarget.innerHTML = CLIPPY_SVG;
+        }, 1500);
+      });
+    });
+    
+    inner.appendChild(button);
+    wrapper.appendChild(inner);
+    return wrapper;
+  }
+  
   // Colorize a substring based on its position in the full address
   // This ensures correct color continuity even for truncated displays
   function colorizeSubstring(text, startPositionInFull) {
     const wrapper = document.createElement('span');
     wrapper.className = 'btc-colorized-address';
     wrapper.setAttribute('data-original', text);
+    
+    // Add hidden original text for CTRL-F searching and copying
+    const hiddenSpan = document.createElement('span');
+    hiddenSpan.className = 'btc-hidden-address';
+    hiddenSpan.textContent = text;
+    hiddenSpan.style.display = 'none';
+    hiddenSpan.setAttribute('aria-hidden', 'true');
+    wrapper.appendChild(hiddenSpan);
     
     let currentChunk = '';
     let currentColorIndex = -1;
@@ -82,6 +130,24 @@
         currentColorIndex = colorIndex;
       } else {
         currentChunk += text[i];
+      }
+      
+      // Add space after every 4-char boundary in the FULL address (if enabled)
+      if (addSpaces && (posInFull + 1) % 4 === 0 && i < text.length - 1) {
+        // Flush current chunk first
+        if (currentChunk) {
+          const span = document.createElement('span');
+          span.textContent = currentChunk;
+          span.style.color = colors[currentColorIndex];
+          wrapper.appendChild(span);
+          currentChunk = '';
+        }
+        
+        // Add space
+        const spaceSpan = document.createElement('span');
+        spaceSpan.className = 'btc-chunk-space';
+        spaceSpan.textContent = ' ';
+        wrapper.appendChild(spaceSpan);
       }
     }
     
@@ -156,6 +222,16 @@
           const colorized = colorizeSubstring(text, posInFull);
           clearAndAppend(lastSpan, colorized);
         }
+      }
+    }
+    
+    // Add copy button inside the truncate container, matching native app-clipboard placement
+    if (showCopyButton && fullAddress) {
+      const truncateSpan = container.matches?.('.truncate') ? container : container.querySelector('.truncate');
+      const targetContainer = truncateSpan || container;
+      if (!targetContainer.querySelector('.btc-copy-clipboard') && !targetContainer.querySelector('app-clipboard:not(.btc-copy-clipboard)')) {
+        const copyBtn = createCopyButton(fullAddress);
+        targetContainer.appendChild(copyBtn);
       }
     }
     
@@ -235,7 +311,14 @@
           }
           
           // Add colorized address
-          fragment.appendChild(colorizeAddress(match));
+          const colorizedSpan = colorizeAddress(match);
+          fragment.appendChild(colorizedSpan);
+          
+          // Add copy button if enabled
+          if (showCopyButton) {
+            const copyBtn = createCopyButton(match);
+            fragment.appendChild(copyBtn);
+          }
           
           currentText = currentText.slice(index + match.length);
         }
@@ -355,6 +438,9 @@
     document.querySelectorAll('.btc-colorized-last').forEach(el => {
       el.classList.remove('btc-colorized-last');
     });
+    document.querySelectorAll('.btc-copy-clipboard').forEach(el => {
+      el.remove();
+    });
     processedNodes = new WeakSet();
   }
   
@@ -363,6 +449,8 @@
     if (message.type === 'updateColors') {
       colors = message.colors;
       enabled = message.enabled;
+      addSpaces = message.addSpaces;
+      showCopyButton = message.showCopyButton;
       
       if (enabled) {
         updateColors();
