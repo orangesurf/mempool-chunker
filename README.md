@@ -5,7 +5,7 @@ _WARNING - DONT INSTALL RANDOM EXTENSIONS WITHOUT CHECKING THE CODE_
 2. Go to [chrome://extensions/](chrome://extensions/) and load unpacked 
 3. Done, view a transaction on mempool.space 
 
-<img width="800" height="391" alt="image" src="https://github.com/user-attachments/assets/2ae8af01-7cc7-4e24-a9a8-a5ac3069da80" />
+<img width="800" height="546" alt="image" src="https://github.com/user-attachments/assets/6e3c636c-3467-4d4e-a88c-f964fa2a389b" />
 
 
 # Configuration
