@@ -23,6 +23,11 @@
 /* Space between chunks */
 .btc-chunk-space {
   display: inline;
+  margin-right: 3px;
+}
+
+.btc-chunk-space:last-child {
+  margin-right: 0;
 }
 
 /* Copy button styling - matches mempool.space native app-clipboard */
